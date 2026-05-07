@@ -19,6 +19,7 @@ BuildRequires:  gcc-c++
 BuildRequires:  make
 BuildRequires:  ninja-build
 BuildRequires:  libunwind-devel
+BuildRequires:  libdwarf-devel
 
 %description
 C++ lightweight logging library used by Quickshell.
