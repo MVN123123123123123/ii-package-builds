@@ -53,9 +53,8 @@ jobs:
             rm -rf ~/rpmbuild/RPMS/x86_64/*.rpm
           done
 
-      - name: Build all specs
+      - name: Build packages
         run: |
-          set -e
           graph=graph.yml
 
           packages=$(yq -r '.packages[]' "$graph")
