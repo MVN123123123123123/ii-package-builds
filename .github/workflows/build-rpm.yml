@@ -40,6 +40,8 @@ jobs:
 
           deps=$(yq -r '.dependencies[]' "$graph")
 
+          mkdir ~/dependencies
+
           for package in $deps; do
             cp "specs/$package.spec" ~/rpmbuild/SPECS/
             spec=~/rpmbuild/SPECS/$package.spec
@@ -49,10 +51,12 @@ jobs:
             dnf builddep -y $spec
             rpmbuild -ba $spec
 
-            sudo dnf install "$HOME/rpmbuild/RPMS/x86_64/$package_name.rpm" -y
-            rm -rf ~/rpmbuild/RPMS/x86_64/*.rpm
+            mv "$HOME/rpmbuild/RPMS/x86_64/"* ~/dependencies/
           done
 
+          createrepo_c ~/dependencies/
+          dnf config-manager --add-repo "file://$HOME/dependencies"
+          dnf makecache
       - name: Build packages
         run: |
           set -e
