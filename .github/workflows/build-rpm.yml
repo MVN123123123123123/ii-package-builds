@@ -15,6 +15,9 @@ jobs:
   rpm:
     runs-on: ubuntu-latest
 
+    permissions:
+      contents: write
+
     container:
       image: fedora:44
 
