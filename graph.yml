@@ -1,7 +1,7 @@
-dependencies:
+dependencies: # dependencies will be built and put to local repo
   - cpptrace
   - breakpad
 
-packages:
+packages: # packages will be built and installed
   - quickshell-git
   - matugen

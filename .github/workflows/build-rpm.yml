@@ -56,7 +56,12 @@ jobs:
           done
 
           createrepo_c ~/dependencies/
-          dnf config-manager --add-repo "file://$HOME/dependencies"
+          echo "[dependencies]
+          name=dependencies
+          baseurl=file://$HOME/dependencies
+          enabled=1
+          gpgcheck=0" | sudo tee /etc/yum.repos.d/dependencies.repo
+
           dnf makecache
       - name: Build packages
         run: |
