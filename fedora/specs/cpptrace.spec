@@ -18,7 +18,7 @@ BuildRequires:  cmake
 BuildRequires:  gcc-c++
 BuildRequires:  make
 BuildRequires:  ninja-build
-BuildRequires:  pkgconfig(libdwarf)
+BuildRequires:  git
 BuildRequires:  pkgconfig(libunwind)
 
 %description
@@ -33,10 +33,7 @@ cd build
 cmake .. -GNinja \
     -DCMAKE_BUILD_TYPE=Release \
     -DCMAKE_INSTALL_PREFIX=/usr/local \
-    -DCPPTRACE_UNWIND_WITH_LIBUNWIND=true \
-    -DCPPTRACE_USE_EXTERNAL_LIBDWARF=On \
-    -DCMAKE_PREFIX_PATH=~/scratch/cpptrace-test/resources \
-    -DCMAKE_INSTALL_PREFIX=~/scratch/cpptrace-test/resources
+    -DCPPTRACE_UNWIND_WITH_LIBUNWIND=true
 
 cmake --build .
 
