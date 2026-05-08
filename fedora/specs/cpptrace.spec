@@ -17,7 +17,7 @@ Source0:        %{url}/archive/%{commit}/cpptrace-%{shortcommit}.tar.gz
 BuildRequires:  cmake
 BuildRequires:  gcc-c++
 BuildRequires:  make
-BuildRequires:  git
+# BuildRequires:  git
 BuildRequires:  ninja-build
 BuildRequires:  libunwind-devel
 
@@ -30,7 +30,14 @@ C++ lightweight logging library used by Quickshell.
 %build
 mkdir -p build
 cd build
-cmake .. -GNinja -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=/usr/local -DCPPTRACE_UNWIND_WITH_LIBUNWIND=true
+cmake .. -GNinja \
+    -DCMAKE_BUILD_TYPE=Release \
+    -DCMAKE_INSTALL_PREFIX=/usr/local \
+    -DCPPTRACE_UNWIND_WITH_LIBUNWIND=true \
+    -DCPPTRACE_USE_EXTERNAL_LIBDWARF=On \
+    -DCMAKE_PREFIX_PATH=~/scratch/cpptrace-test/resources \
+    -DCMAKE_INSTALL_PREFIX=~/scratch/cpptrace-test/resources
+
 cmake --build .
 
 %install
