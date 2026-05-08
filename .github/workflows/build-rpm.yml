@@ -3,8 +3,8 @@ name: Build packages
 on:
   push:
     paths:
-      - "specs/**"
-      - "graph.yml"
+      - "fedora/specs/**"
+      - "fedora/graph.yml"
   workflow_dispatch:
 
 jobs:
