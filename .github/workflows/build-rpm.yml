@@ -89,6 +89,6 @@ jobs:
         uses: ncipollo/release-action@v1
         with:
           allowUpdates: true
-          tag: "packages"
+          tag: "packages-fedora"
           artifacts: "~/rpmbuild/RPMS/**/*.rpm"
           token: ${{ secrets.GITHUB_TOKEN }}
