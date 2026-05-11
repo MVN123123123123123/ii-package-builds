@@ -1,112 +1,105 @@
-# Original-Spec: https://copr-dist-git.fedorainfracloud.org/packages/errornointernet/quickshell/quickshell-git.git/plain/quickshell-git.spec?h=master
-%global debug_package %{nil}
-%bcond_with         asan
+%global commit          7d1c9a9c6721606b129829134d6f614f015621e2
+%global shortcommit     %(c=%{commit}; echo ${c:0:7})
 
-%global commit      7511545ee20664e3b8b8d3322c0ffe7567c56f7a
-%global shortcommit %(c=%{commit}; echo ${c:0:7})
-%global commits     770
-%global snapdate    20260327
-%global tag         0.2.1
+# The upstream project version in CMakeLists.txt at pinned commit
+%global upstream_ver    0.3.0
 
-Name:               quickshell-git
-Version:            %{tag}^%{commits}.git%{shortcommit}
-Release:            0%{?dist}
-Summary:            Flexible QtQuick based desktop shell toolkit
+Name:           quickshell-git
+Version:        %{upstream_ver}^1.git%{shortcommit}
+Release:        2%{?dist}
+Summary:        A flexible QtQuick-based desktop shell toolkit
 
-License:            LGPL-3.0-only AND GPL-3.0-only
-URL:                https://github.com/quickshell-mirror/quickshell
-Source0:            %{url}/archive/%{commit}/quickshell-%{shortcommit}.tar.gz
+License:        LGPL-3.0-only
+URL:            https://git.outfoxxed.me/quickshell/quickshell
+Source0:        %{url}/archive/%{commit}.tar.gz#/quickshell-%{shortcommit}.tar.gz
 
-Conflicts:          quickshell <= %{tag}
+# https://fedoraproject.org/wiki/Changes/EncourageI686LeafRemoval
+ExcludeArch:    %{ix86}
 
-%if 0%{fedora} >= 43
-BuildRequires:      breakpad-static
-%endif
-BuildRequires:      cmake
-BuildRequires:      cmake(Qt6Core)
-BuildRequires:      cmake(Qt6Qml)
-BuildRequires:      cmake(Qt6ShaderTools)
-BuildRequires:      cmake(Qt6WaylandClient)
-BuildRequires:      gcc-c++
-BuildRequires:      ninja-build
-BuildRequires:      pkgconfig(breakpad)
-BuildRequires:      pkgconfig(CLI11)
-BuildRequires:      pkgconfig(gbm)
-BuildRequires:      pkgconfig(glib-2.0)
-BuildRequires:      pkgconfig(jemalloc)
-BuildRequires:      pkgconfig(libdrm)
-BuildRequires:      pkgconfig(libpipewire-0.3)
-BuildRequires:      pkgconfig(pam)
-BuildRequires:      pkgconfig(polkit-agent-1)
-BuildRequires:      pkgconfig(wayland-client)
-BuildRequires:      pkgconfig(wayland-protocols)
-BuildRequires:      cpptrace
-BuildRequires:      qt6-qtbase-private-devel
-BuildRequires:      spirv-tools
-
-Requires: qt6-qtdeclarative
-Requires: qt6-qtbase
-Requires: jemalloc
-Requires: qt6-qtsvg
-Requires: pipewire-libs
-Requires: libxcb
-Requires: wayland-devel
-Requires: qt6-qtwayland
-Requires: qt5-qtwayland
-Requires: libdrm
-Requires: breakpad
-Requires: kf6-kirigami
-Requires: libunwind-devel
-Requires: qt6-qt5compat
-Requires: qt6-qtimageformats
-Requires: qt6-qtpositioning
-Requires: qt6-qtquicktimeline
-Requires: qt6-qtsensors
-Requires: qt6-qttools
-Requires: qt6-qttranslations
-Requires: qt6-qtvirtualkeyboard
-Requires: kdialog
-Requires: kf6-syntax-highlighting
-
-%if %{with asan}
-BuildRequires:      libasan
-%endif
-
-Provides:           desktop-notification-daemon
+Conflicts:      quickshell
+BuildRequires:  cmake
+BuildRequires:  gcc-c++
+BuildRequires:  ninja-build
+BuildRequires:  git-core
+BuildRequires:  cli11-devel
+BuildRequires:  spirv-tools-devel
+BuildRequires:  vulkan-headers
+BuildRequires:  pkgconfig(wayland-client)
+BuildRequires:  pkgconfig(wayland-protocols)
+BuildRequires:  qt6-qtshadertools-devel
+BuildRequires:  pkgconfig(polkit-agent-1)
+BuildRequires:  glib2-devel
+BuildRequires:  pkgconfig(libdrm)
+BuildRequires:  pkgconfig(gbm)
+BuildRequires:  pkgconfig(libpipewire-0.3)
+BuildRequires:  pkgconfig(xcb)
+BuildRequires:  mesa-libEGL-devel
+BuildRequires:  cpptrace-devel
+BuildRequires:  libzstd-devel
+BuildRequires:  jemalloc-devel
+BuildRequires:  qt6-qtbase-devel
+BuildRequires:  qt6-qtdeclarative-devel
+BuildRequires:  qt6-qtsvg-devel
+BuildRequires:  qt6-qtwayland-devel
+BuildRequires:  qt6-qtbase-private-devel
+BuildRequires:  qt6-qtdeclarative-private-devel
+BuildRequires:  libunwind-devel
+BuildRequires:  pam-devel
+Requires:       jemalloc%{?_isa}
+Requires:       mesa-libEGL%{?_isa}
+Requires:       qt6-qtdeclarative%{?_isa}
+Requires:       qt6-qtbase%{?_isa}
+Requires:       qt6-qtsvg%{?_isa}
+Requires:       libdrm%{?_isa}
+Requires:       pipewire-libs%{?_isa}
+Requires:       libxcb%{?_isa}
+Requires:       qt6-qt5compat%{?_isa}
+Requires:       qt6-qtimageformats%{?_isa}
+Requires:       qt6-qtmultimedia%{?_isa}
+Requires:       qt6-qtpositioning%{?_isa}
+Requires:       qt6-qtquicktimeline%{?_isa}
+Requires:       qt6-qtsensors%{?_isa}
+Requires:       qt6-qttools%{?_isa}
+Requires:       qt6-qttranslations
+Requires:       qt6-qtvirtualkeyboard%{?_isa}
+Requires:       qt6-qtwayland%{?_isa}
+Requires:       kf6-kirigami%{?_isa}
+Requires:       kdialog
+Requires:       kf6-syntax-highlighting%{?_isa}
+Provides:       quickshell = %{version}-%{release}
 
 %description
-Flexible toolkit for making desktop shells with QtQuick, targeting
-Wayland and X11.
+Quickshell is a flexible QtQuick-based desktop shell toolkit.
 
 %prep
-%autosetup -n quickshell-%{commit} -p1
+%autosetup -n quickshell -p1
 
 %build
-%cmake  -GNinja \
-%if %{with asan}
-        -DASAN=ON \
-%endif
-        -DBUILD_SHARED_LIBS=OFF \
-        -DCMAKE_BUILD_TYPE=Release \
-        -DGIT_REVISION=%{commit} \
-        -DINSTALL_QML_PREFIX=%{_lib}/qt6/qml
+%cmake -GNinja \
+    -DCMAKE_BUILD_TYPE=RelWithDebInfo \
+    -DCMAKE_INSTALL_PREFIX=%{_prefix} \
+    -DDISTRIBUTOR="COPR (package: quickshell-git)" \
+    -DDISTRIBUTOR_DEBUGINFO_AVAILABLE=NO \
+    -DINSTALL_QML_PREFIX=%{_lib}/qt6/qml \
+
 %cmake_build
 
 %install
 %cmake_install
 
+ln -sf quickshell %{buildroot}%{_bindir}/qs
+
 %files
 %license LICENSE
-%license LICENSE-GPL
-%doc BUILD.md
-%doc CONTRIBUTING.md
-%doc README.md
-%doc changelog/v%{tag}.md
-%{_bindir}/qs
 %{_bindir}/quickshell
+%{_bindir}/qs
+%{_libdir}/qt6/qml/Quickshell/
 %{_datadir}/applications/org.quickshell.desktop
 %{_datadir}/icons/hicolor/scalable/apps/org.quickshell.svg
-%{_libdir}/qt6/qml/Quickshell
+
+
+%triggerin -- qt6-qtbase, qt6-qtwayland
+/usr/bin/quickshell --private-check-compat || :
 
 %changelog
 %autochangelog
