@@ -1,3 +1,4 @@
+#original spec file: https://github.com/MVN123123123123123/hyprlandRPM/blob/master/kitty/kitty.spec
 %global forgeurl https://github.com/kovidgoyal/kitty
 %global gomodulesmode GO111MODULE=on
 %global goipath kitty
