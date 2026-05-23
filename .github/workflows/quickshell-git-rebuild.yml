@@ -1,0 +1,44 @@
+name: Daily Rebuild quickshell-git
+
+on:
+  workflow_dispatch:
+  schedule:
+    # Run daily to fight Qt6 packaging mismatch issues on Fedora Rawhide
+    - cron: '0 0 * * *'
+
+jobs:
+  rebuild:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Bump Release to force rebuild
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+
+          SPEC_FILE="fedora/specs/quickshell-git.spec"
+
+          if [ ! -f "$SPEC_FILE" ]; then
+            echo "❌ Error: $SPEC_FILE not found!"
+            exit 1
+          fi
+
+          TIMESTAMP=$(date +%Y%m%d%H%M)
+          echo "========================================"
+          echo "Bumping Release to $TIMESTAMP to force daily rebuild against latest Qt6..."
+          echo "========================================"
+
+          sed -i -E "s/^Release:.*/Release:        $TIMESTAMP%{?dist}/" "$SPEC_FILE"
+
+          git add "$SPEC_FILE"
+          git commit -m "chore: force daily rebuild of quickshell-git (release: $TIMESTAMP)"
+
+          git pull --rebase origin main
+          git push origin main
+
+          echo "✅ Successfully pushed updates to trigger rebuild."
