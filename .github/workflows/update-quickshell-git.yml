@@ -81,8 +81,8 @@ jobs:
             echo "Committing and pushing updated quickshell-git spec..."
             git commit -m "chore: auto-update quickshell-git spec (release: $TIMESTAMP)"
 
-            git pull --rebase origin master
-            git push origin master
+            git pull --rebase origin main
+            git push origin main
 
             echo "✅ Successfully pushed updates."
           else

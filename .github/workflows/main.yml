@@ -89,8 +89,8 @@ jobs:
             git commit -m "chore: auto-update spec file versions"
             
             # Pull any new remote changes (rebase) before pushing to avoid conflicts
-            git pull --rebase origin master
-            git push origin master
+            git pull --rebase origin main
+            git push origin main
             
             echo "Successfully pushed updates."
           else
