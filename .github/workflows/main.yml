@@ -78,6 +78,7 @@ jobs:
             TIMESTAMP=$(date +%Y%m%d%H%M)
             echo "Bumping Release to $TIMESTAMP to force rebuild..."
             sed -i -E "s/^Release:.*/Release:        $TIMESTAMP%{?dist}/" "$SPEC_FILE"
+            git add "$SPEC_FILE"
             CHANGES_MADE=1
           done
 
