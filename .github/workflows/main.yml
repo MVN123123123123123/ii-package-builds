@@ -28,6 +28,7 @@ jobs:
           # Format: "upstream_owner/upstream_repo|path/to/subdirectory/package.spec"
           TARGETS=(
           "kovidgoyal/kitty|fedora/specs/kitty.spec"
+          "InioX/matugen|fedora/specs/matugen.spec"
           )
 
           # Loop through each target
