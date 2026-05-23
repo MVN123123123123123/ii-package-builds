@@ -2,15 +2,15 @@
 %global debug_package %{nil}
 %bcond_with         asan
 
-%global commit      7d1c9a9c6721606b129829134d6f614f015621e2
+%global commit          4b4fca3224ab977dc515ac0bb78d00b3dfa71e00
 %global shortcommit %(c=%{commit}; echo ${c:0:7})
-%global commits     818
+%global commit          4b4fca3224ab977dc515ac0bb78d00b3dfa71e00
 %global snapdate    20260511
 %global tag         0.3.0
 
 Name:               quickshell-git
 Version:            %{tag}^%{commits}.git%{shortcommit}
-Release:            0%{?dist}
+Release:        202605230249%{?dist}
 Summary:            Flexible QtQuick based desktop shell toolkit
 
 License:            LGPL-3.0-only AND GPL-3.0-only
