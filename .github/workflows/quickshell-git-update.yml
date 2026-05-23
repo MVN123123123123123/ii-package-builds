@@ -2,8 +2,6 @@ name: Update quickshell-git Spec from PKGBUILD
 
 on:
   workflow_dispatch:
-  schedule:
-    - cron: '0 0 * * *'
 
 jobs:
   update-commits:
