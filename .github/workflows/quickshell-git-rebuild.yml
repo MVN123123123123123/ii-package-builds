@@ -1,5 +1,5 @@
 name: Daily Rebuild quickshell-git
-
+#adapted from https://github.com/MVN123123123123123/hyprlandRPM
 on:
   workflow_dispatch:
   schedule:

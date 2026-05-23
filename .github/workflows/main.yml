@@ -1,5 +1,5 @@
 name: Update COPR Spec Versions
-
+#originally from https://github.com/MVN123123123123123/hyprlandRPM
 on:
   schedule:
     - cron: '0 0 * * *'

@@ -1,5 +1,5 @@
 name: Update quickshell-git Spec from PKGBUILD
-
+#adapted from https://github.com/MVN123123123123123/hyprlandRPM
 on:
   workflow_dispatch:
 
