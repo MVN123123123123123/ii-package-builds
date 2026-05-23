@@ -3,7 +3,6 @@ name: Daily Rebuild quickshell-git
 on:
   workflow_dispatch:
   schedule:
-    # Run daily to fight Qt6 packaging mismatch issues on Fedora Rawhide
     - cron: '0 0 * * *'
 
 jobs:
