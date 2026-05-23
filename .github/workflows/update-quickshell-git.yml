@@ -1,4 +1,4 @@
-name: Update quickshell-git Spec Commits
+name: Update quickshell-git Spec from PKGBUILD
 
 on:
   schedule:
@@ -15,12 +15,13 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      - name: Check upstream and update quickshell-git spec
+      - name: Fetch PKGBUILD and update quickshell-git spec
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
 
           SPEC_FILE="fedora/specs/quickshell-git.spec"
+          PKGBUILD_URL="https://raw.githubusercontent.com/end-4/dots-hyprland/main/sdata/dist-arch/illogical-impulse-quickshell-git/PKGBUILD"
           CHANGES_MADE=0
 
           if [ ! -f "$SPEC_FILE" ]; then
@@ -29,39 +30,64 @@ jobs:
           fi
 
           echo "========================================"
-          echo "Checking quickshell-git spec file commits"
+          echo "Fetching PKGBUILD from end-4/dots-hyprland"
           echo "========================================"
 
-          # --- Quickshell main commit ---
-          LATEST_COMMIT=$(git ls-remote https://git.outfoxxed.me/quickshell/quickshell.git HEAD | awk '{print $1}')
-          CURRENT_COMMIT=$(grep -E "^%global\s+commit\s+" "$SPEC_FILE" | awk '{print $3}')
+          # Download the PKGBUILD
+          PKGBUILD_CONTENT=$(curl -sL "$PKGBUILD_URL")
 
-          echo "  Upstream: $LATEST_COMMIT"
-          echo "  Current:  $CURRENT_COMMIT"
-
-          if [ -z "$LATEST_COMMIT" ]; then
-            echo "  ⚠️  Could not fetch latest commit for quickshell. Skipping..."
-            exit 0
+          if [ -z "$PKGBUILD_CONTENT" ]; then
+            echo "❌ Error: Failed to fetch PKGBUILD from $PKGBUILD_URL"
+            exit 1
           fi
 
-          if [ "$LATEST_COMMIT" != "$CURRENT_COMMIT" ] && [ -n "$CURRENT_COMMIT" ]; then
-            echo "  🚀 New commit detected! Updating commit..."
-            
-            # Fetch the upstream version from CMakeLists.txt
-            CURL_URL="https://git.outfoxxed.me/quickshell/quickshell/raw/commit/$LATEST_COMMIT/CMakeLists.txt"
+          echo "$PKGBUILD_CONTENT" | head -5
+          echo "..."
+
+          # --- Extract the pinned commit from PKGBUILD ---
+          # The PKGBUILD has: _commit='<hash>'
+          PKGBUILD_COMMIT=$(echo "$PKGBUILD_CONTENT" | grep -oP "^_commit=['\"]?\K[a-f0-9]+")
+
+          if [ -z "$PKGBUILD_COMMIT" ]; then
+            echo "❌ Error: Could not extract _commit from PKGBUILD!"
+            echo "  PKGBUILD content (first 20 lines):"
+            echo "$PKGBUILD_CONTENT" | head -20
+            exit 1
+          fi
+
+          echo "  PKGBUILD commit: $PKGBUILD_COMMIT"
+
+          # --- Get current commit from spec ---
+          CURRENT_COMMIT=$(grep -m1 -oP '^%global\s+commit\s+\K[a-f0-9]+' "$SPEC_FILE")
+          echo "  Current commit:  $CURRENT_COMMIT"
+
+          echo "========================================"
+
+          if [ "$PKGBUILD_COMMIT" != "$CURRENT_COMMIT" ] && [ -n "$CURRENT_COMMIT" ]; then
+            echo "🚀 New commit from PKGBUILD detected! Updating spec..."
+
+            # Update the commit line(s) in the spec file
+            sed -i -E "s/^(%global\s+commit\s+)[a-f0-9]+/\1$PKGBUILD_COMMIT/" "$SPEC_FILE"
+
+            # --- Optionally fetch upstream version from CMakeLists.txt ---
+            CURL_URL="https://git.outfoxxed.me/quickshell/quickshell/raw/commit/$PKGBUILD_COMMIT/CMakeLists.txt"
             UPSTREAM_VER=$(curl -sL "$CURL_URL" | grep -i "project" | grep "VERSION" | sed -n 's/.*VERSION *"\([^"]*\)".*/\1/p')
-            
-            if [ -z "$UPSTREAM_VER" ]; then
-              echo "  ⚠️  Could not parse upstream version from CMakeLists.txt! Keeping current."
+
+            if [ -n "$UPSTREAM_VER" ]; then
+              echo "  Upstream Version (from CMakeLists.txt): $UPSTREAM_VER"
+              sed -i -E "s/^(%global\s+tag\s+).*/\1$UPSTREAM_VER/" "$SPEC_FILE"
             else
-              echo "  Upstream Version: $UPSTREAM_VER"
-              sed -i "s/^%global upstream_ver.*/%global upstream_ver    $UPSTREAM_VER/" "$SPEC_FILE"
+              echo "  ⚠️  Could not parse upstream version from CMakeLists.txt. Keeping current tag."
             fi
-            
-            sed -i "s/^%global commit.*/%global commit          $LATEST_COMMIT/" "$SPEC_FILE"
+
+            # Update snapdate to today
+            SNAPDATE=$(date +%Y%m%d)
+            echo "  Updating snapdate to: $SNAPDATE"
+            sed -i -E "s/^(%global\s+snapdate\s+).*/\1$SNAPDATE/" "$SPEC_FILE"
+
             CHANGES_MADE=1
           else
-            echo "  ✅ Already up to date."
+            echo "✅ Commit already matches PKGBUILD. No update needed."
           fi
 
           echo "========================================"

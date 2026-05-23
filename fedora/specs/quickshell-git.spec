@@ -4,12 +4,11 @@
 
 %global commit          4b4fca3224ab977dc515ac0bb78d00b3dfa71e00
 %global shortcommit %(c=%{commit}; echo ${c:0:7})
-%global commit          4b4fca3224ab977dc515ac0bb78d00b3dfa71e00
 %global snapdate    20260511
-%global tag         0.3.0
+%global tag         0.2.1
 
 Name:               quickshell-git
-Version:            %{tag}^%{commits}.git%{shortcommit}
+Version:            %{tag}^%{snapdate}.git%{shortcommit}
 Release:            202605230249%{?dist}
 Summary:            Flexible QtQuick based desktop shell toolkit
 
