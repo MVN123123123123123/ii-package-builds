@@ -7,7 +7,7 @@
 
 Name:               matugen
 Version:        4.1.0
-Release:        202605250206%{?dist}
+Release:        202605260157%{?dist}
 Summary:            A cross-platform material you and base16 color generation tool
 
 License:            GPL-2.0
