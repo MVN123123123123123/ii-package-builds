@@ -67,20 +67,13 @@ jobs:
 
               # Replace Version and reset Release
               sed -i "s/^Version:.*/Version:        $LATEST_VERSION/" "$SPEC_FILE"
-              sed -i "s/^Release:.*/Release:        1%{?dist}/" "$SPEC_FILE"
-
-              # Stage the changed file
+              TIMESTAMP=$(date +%Y%m%d%H%M)
+              sed -i -E "s/^Release:.*/Release:        $TIMESTAMP%{?dist}/" "$SPEC_FILE"
               git add "$SPEC_FILE"
               CHANGES_MADE=1
             else
               echo "✅ Already up to date."
             fi
-
-            TIMESTAMP=$(date +%Y%m%d%H%M)
-            echo "Bumping Release to $TIMESTAMP to force rebuild..."
-            sed -i -E "s/^Release:.*/Release:        $TIMESTAMP%{?dist}/" "$SPEC_FILE"
-            git add "$SPEC_FILE"
-            CHANGES_MADE=1
           done
 
           echo "----------------------------------------"
