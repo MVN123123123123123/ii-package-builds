@@ -6,9 +6,9 @@
 %bcond test 0
 
 Name:           kitty
-Version:        0.49.0
+Version:        0.49.1
 Epoch:          1
-Release:        202609220208%{?dist}
+Release:        202609250211%{?dist}
 Summary:        Cross-platform, fast, feature full, GPU based terminal emulator
 
 # GPL-3.0-only: kitty
